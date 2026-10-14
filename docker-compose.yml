@@ -1,0 +1,50 @@
+# =============================================================================
+#  Connoisseur Companion - Restaurant Recommendation System
+#  File   : docker-compose.yml
+#  Author : Gautam Kakadiya
+#  Copyright (c) 2026 Gautam Kakadiya
+#  Licensed under the MIT License. See LICENSE in the project root.
+# =============================================================================
+
+# Two-service topology: the MCP server runs as a standalone HTTP service and
+# the Gradio host connects to it over Streamable HTTP.
+#   cp .env.example .env   # add your LLM credentials
+#   docker compose up --build
+services:
+  mcp-server:
+    build: .
+    image: connoisseur-companion:latest
+    command: ["connoisseur", "serve", "--transport", "http", "--port", "8000"]
+    env_file:
+      - path: .env
+        required: false
+    ports:
+      - "8000:8000"
+    volumes:
+      - connoisseur-data:/app/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 15s
+      timeout: 5s
+      start_period: 120s
+      retries: 5
+
+  app:
+    image: connoisseur-companion:latest
+    command: ["connoisseur", "ui"]
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      MCP_SERVER_URL: http://mcp-server:8000/mcp
+      UI_HOST: 0.0.0.0
+    ports:
+      - "7860:7860"
+    volumes:
+      - connoisseur-data:/app/data
+    depends_on:
+      mcp-server:
+        condition: service_healthy
+
+volumes:
+  connoisseur-data:

@@ -1,0 +1,34 @@
+# =============================================================================
+#  Connoisseur Companion - Restaurant Recommendation System
+#  File   : .gitignore
+#  Author : Gautam Kakadiya
+#  Copyright (c) 2026 Gautam Kakadiya
+#  Licensed under the MIT License. See LICENSE in the project root.
+# =============================================================================
+
+# Secrets
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+
+# Generated data (recreate with `connoisseur download-data` / `build-index`)
+data/*
+!data/README.md
+
+# Gradio / IDE / OS
+.gradio/
+flagged/
+.ipynb_checkpoints/
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

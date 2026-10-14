@@ -1,0 +1,76 @@
+# =============================================================================
+#  Connoisseur Companion - Restaurant Recommendation System
+#  File   : pyproject.toml
+#  Author : Gautam Kakadiya
+#  Copyright (c) 2026 Gautam Kakadiya
+#  Licensed under the MIT License. See LICENSE in the project root.
+# =============================================================================
+
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "connoisseur-companion"
+version = "1.0.0"
+description = "Multimodal RAG + multi-agent restaurant recommender exposed through the Model Context Protocol (MCP)."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{ name = "Gautam Kakadiya" }]
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = ["rag", "mcp", "agents", "langgraph", "chromadb", "clip", "gradio", "watsonx", "recommendation"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    # MCP
+    "fastmcp>=3.1,<4",
+    "mcp>=1.25",
+    # LLM orchestration
+    "langchain-core>=1.2,<2",
+    "langchain-ibm>=1.0,<2",
+    "langgraph>=1.0,<2",
+    # Retrieval
+    "chromadb>=1.0,<2",
+    "sentence-transformers>=3.0",
+    "transformers>=4.45",
+    "torch>=2.2",
+    "pillow>=10",
+    "numpy>=1.26",
+    # App & utilities
+    "gradio>=6.0,<7",
+    "pydantic>=2.7",
+    "pydantic-settings>=2.3",
+    "requests>=2.31",
+    "tenacity>=8.2",
+]
+
+[project.optional-dependencies]
+openai = ["langchain-openai>=1.0"]
+anthropic = ["langchain-anthropic>=1.0"]
+all = ["langchain-openai>=1.0", "langchain-anthropic>=1.0"]
+dev = ["pytest>=8", "pytest-asyncio>=0.23", "ruff>=0.6"]
+
+[project.scripts]
+connoisseur = "connoisseur.cli:main"
+
+[project.urls]
+Repository = "https://github.com/gomzee1024/RestaurantRecommendationSystem"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM"]
+ignore = ["E501"]  # long prompt strings are intentional

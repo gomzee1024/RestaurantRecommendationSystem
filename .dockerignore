@@ -1,0 +1,20 @@
+# =============================================================================
+#  Connoisseur Companion - Restaurant Recommendation System
+#  File   : .dockerignore
+#  Author : Gautam Kakadiya
+#  Copyright (c) 2026 Gautam Kakadiya
+#  Licensed under the MIT License. See LICENSE in the project root.
+# =============================================================================
+
+.git
+.venv
+venv
+.env
+data
+**/__pycache__
+.pytest_cache
+.ruff_cache
+.gradio
+docs
+tests
+*.egg-info
