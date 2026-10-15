@@ -28,7 +28,7 @@ from collections.abc import Callable
 from typing import Annotated, Any, TypedDict
 
 from langchain_core.language_models.chat_models import BaseChatModel
-from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langgraph.graph import END, START, StateGraph
 
 from ..llm import get_chat_model, message_text, parse_json_object
@@ -91,10 +91,18 @@ class RecommendationWorkflow:
 
     # ----------------------------------------------------------------- helper
     def _ask_json(self, persona: AgentPersona, prompt: str) -> dict:
-        reply = self.llm_factory().invoke(
-            [SystemMessage(content=persona.system_prompt()), HumanMessage(content=prompt)]
-        )
-        return parse_json_object(message_text(reply.content))
+        llm = self.llm_factory()
+        messages = [SystemMessage(content=persona.system_prompt()), HumanMessage(content=prompt)]
+        text = message_text(llm.invoke(messages).content)
+        try:
+            return parse_json_object(text)
+        except ValueError as e:  # one repair round: show the model its own reply and the parse error
+            log.info("%s returned invalid JSON (%s); asking it to repair", persona.key, e)
+            messages += [
+                AIMessage(content=text),
+                HumanMessage(content=f"That was not valid JSON ({e}). Reply with only the corrected JSON object."),
+            ]
+            return parse_json_object(message_text(llm.invoke(messages).content))
 
     # ------------------------------------------------------------------ nodes
     def node_profile(self, state: RecommendationState) -> dict:

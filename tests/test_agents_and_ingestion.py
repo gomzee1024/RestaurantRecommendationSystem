@@ -8,11 +8,13 @@
 
 import json
 
+import pytest
 from conftest import FakeLLM
 
 from connoisseur.agents.workflow import RecommendationWorkflow, format_recommendations
 from connoisseur.ingestion.extractor import EXTRACTION_SYSTEM, REPAIR_SYSTEM, RestaurantExtractor, split_culinary_map
 from connoisseur.knowledge_base import KnowledgeBase
+from connoisseur.llm import parse_json_object
 
 VALID = json.dumps(
     {
@@ -41,6 +43,15 @@ def test_extractor_gives_up_after_bounded_repairs():
     llm = FakeLLM({EXTRACTION_SYSTEM: "{}", REPAIR_SYSTEM: '{"name": "only a name"}'})
     assert RestaurantExtractor(llm).extract("...") is None
     assert len(llm.calls) == 4  # 1 extraction + 3 repairs
+
+
+def test_parse_json_object_tolerates_common_llm_glitches():
+    # Granite often drops the outermost closing brace; braces inside strings must not confuse the repair
+    assert parse_json_object('{"styles": [{"name": "Tacos {al pastor}"}]') == {"styles": [{"name": "Tacos {al pastor}"}]}
+    assert parse_json_object('Sure! {"a": 1} Hope this helps {:)}') == {"a": 1}
+    assert parse_json_object('```json\n{"a": [1, {"b": "cut off') == {"a": [1, {"b": "cut off"}]}
+    with pytest.raises(ValueError):
+        parse_json_object("no json here")
 
 
 def test_split_culinary_map_drops_heading():

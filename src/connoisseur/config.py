@@ -43,7 +43,9 @@ class Settings(BaseSettings):
     watsonx_url: str = "https://us-south.ml.cloud.ibm.com"
     watsonx_project_id: str | None = None
 
-    # OpenAI / Anthropic (keys are read by their SDKs: OPENAI_API_KEY / ANTHROPIC_API_KEY)
+    # OpenAI / Anthropic (read here so keys in .env work; the SDKs only look at os.environ)
+    openai_api_key: str | None = None
+    anthropic_api_key: str | None = None
 
     # ---- Data & index -------------------------------------------------------
     data_dir: Path = PROJECT_ROOT / "data"

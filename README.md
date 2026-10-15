@@ -178,9 +178,9 @@ Set `LLM_PROVIDER` in `.env` and provide that provider's credentials:
 |---|---|---|---|
 | `watsonx` *(default)* | `WATSONX_APIKEY`, `WATSONX_PROJECT_ID`, `WATSONX_URL` | `ibm/granite-4-h-small` | `meta-llama/llama-4-maverick-17b-128e-instruct-fp8` |
 | `openai` | `OPENAI_API_KEY` | `gpt-4o-mini` | `gpt-4o-mini` |
-| `anthropic` | `ANTHROPIC_API_KEY` | `claude-sonnet-5-5` | `claude-sonnet-5-5` |
+| `anthropic` | `ANTHROPIC_API_KEY` | `claude-opus-5-5` | `claude-opus-5-5` |
 
-Override models with `LLM_MODEL` / `VISION_MODEL`. For watsonx, create a project at [cloud.ibm.com](https://cloud.ibm.com) → *watsonx.ai*, associate a Runtime service, then copy the project ID and an IBM Cloud API key.
+Override models with `LLM_MODEL` / `VISION_MODEL` (e.g. `LLM_MODEL=claude-sonnet-5-5` for a cheaper Claude). Claude models choose their own sampling, so `LLM_TEMPERATURE` applies to watsonx and OpenAI only. For watsonx, create a project at [cloud.ibm.com](https://cloud.ibm.com) → *watsonx.ai*, associate a Runtime service, then copy the project ID and an IBM Cloud API key.
 
 ---
 
